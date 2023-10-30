@@ -20,4 +20,4 @@ PGPORT_TEST=5432
 # use require('crypto').randomBytes(64).toString('hex'); to generate token key
 ACCESS_TOKEN_KEY=
 REFRESH_TOKEN_KEY=
-ACCCESS_TOKEN_AGE=3000
+ACCESS_TOKEN_AGE=3000
