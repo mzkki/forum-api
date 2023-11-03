@@ -1,5 +1,7 @@
 const AddedComment = require('../../Domains/comments/entities/AddedComment');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 
 class CommentRepositoryPostgres extends CommentRepository {
   constructor(pool, idGenerator) {
@@ -21,6 +23,35 @@ class CommentRepositoryPostgres extends CommentRepository {
     const result = await this._pool.query(query);
 
     return new AddedComment({ ...result.rows[0] });
+  }
+
+  async verifyCommentOwner(payload) {
+    const { commentId, owner } = payload;
+
+    const query = {
+      text: 'SELECT * FROM comments WHERE id = $1',
+      values: [commentId],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rowCount) {
+      throw new NotFoundError('Comment tidak ditemukan');
+    }
+
+    const comment = result.rows[0];
+
+    if (comment.owner !== owner) {
+      throw new AuthorizationError('Anda tidak berhak melakukan hal ini');
+    }
+  }
+
+  async softDeleteComment(id) {
+    const query = {
+      text: 'UPDATE comments SET is_delete = true WHERE id = $1',
+      values: [id],
+    };
+
+    await this._pool.query(query);
   }
 }
 

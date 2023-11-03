@@ -1,5 +1,6 @@
 const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentUseCase');
 const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUseCase');
+const SoftDeleteCommentUseCase = require('../../../../Applications/use_case/SoftDeleteCommentUseCase');
 
 class ThreadsHandler {
   constructor(container) {
@@ -7,6 +8,7 @@ class ThreadsHandler {
 
     this.postCommentHandler = this.postCommentHandler.bind(this);
     this.postThreadHandler = this.postThreadHandler.bind(this);
+    this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
   }
 
   async postThreadHandler(request, h) {
@@ -39,6 +41,19 @@ class ThreadsHandler {
       },
     });
     response.code(201);
+    return response;
+  }
+
+  async deleteCommentHandler(request, h) {
+    const { id: owner } = request.auth.credentials;
+    const { threadId, commentId } = request.params;
+    const softDeleteCommentUseCase = this._container.getInstance(SoftDeleteCommentUseCase.name);
+    await softDeleteCommentUseCase.execute({ owner, threadId, commentId });
+
+    const response = h.response({
+      status: 'success',
+    });
+    response.code(200);
     return response;
   }
 }

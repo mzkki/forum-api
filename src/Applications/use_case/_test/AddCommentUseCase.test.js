@@ -6,6 +6,33 @@ const UserRepository = require('../../../Domains/users/UserRepository');
 const AddCommentUseCase = require('../AddCommentUseCase');
 
 describe('AddCommentUseCase', () => {
+  it('should throw error if use case payload not contain content', async () => {
+    const useCasePayload = {
+      owner: 'user-123',
+      threadId: 'thread-123',
+    };
+
+    const addCommentUseCase = new AddCommentUseCase({});
+
+    await expect(addCommentUseCase.execute(useCasePayload))
+      .rejects
+      .toThrowError('ADD_COMMENT_USE_CASE.NOT_CONTAIN_CONTENT');
+  });
+
+  it('should throw error if content not a string', async () => {
+    const useCasePayload = {
+      owner: 'user-123',
+      content: 123,
+      threadId: 'thread-123',
+    };
+
+    const addCommentUseCase = new AddCommentUseCase({});
+
+    await expect(addCommentUseCase.execute(useCasePayload))
+      .rejects
+      .toThrowError('ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
+  });
+
   it('should orchestrating the add comment action correctly', async () => {
     const useCasePayload = {
       content: 'isi komen',
