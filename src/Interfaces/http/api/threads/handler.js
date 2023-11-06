@@ -1,4 +1,5 @@
 const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentUseCase');
+const AddReplyUseCase = require('../../../../Applications/use_case/AddReplyUseCase');
 const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUseCase');
 const GetThreadWithCommentsByIdUseCase = require('../../../../Applications/use_case/GetThreadWithCommentsByIdUseCase');
 const SoftDeleteCommentUseCase = require('../../../../Applications/use_case/SoftDeleteCommentUseCase');
@@ -11,6 +12,7 @@ class ThreadsHandler {
     this.postThreadHandler = this.postThreadHandler.bind(this);
     this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
     this.getThreadWithCommentsHandler = this.getThreadWithCommentsHandler.bind(this);
+    this.postReplyHandler = this.postReplyHandler.bind(this);
   }
 
   async postThreadHandler(request, h) {
@@ -62,7 +64,6 @@ class ThreadsHandler {
   async getThreadWithCommentsHandler(request, h) {
     const getThreadwithCommentsByIdUseCase = this
       ._container.getInstance(GetThreadWithCommentsByIdUseCase.name);
-    // console.log(getThreadwithCommentsByIdUseCase);
     const data = await getThreadwithCommentsByIdUseCase.execute(request.params);
 
     const response = h.response({
@@ -72,6 +73,24 @@ class ThreadsHandler {
       },
     });
     response.code(200);
+    return response;
+  }
+
+  async postReplyHandler(request, h) {
+    const { id: owner } = request.auth.credentials;
+    const { content } = request.payload;
+    const { threadId, commentId } = request.params;
+    const addReplyUseCase = this._container.getInstance(AddReplyUseCase.name);
+    const addedReply = await addReplyUseCase.execute({
+      content, owner, threadId, commentId,
+    });
+    const response = h.response({
+      status: 'success',
+      data: {
+        addedReply,
+      },
+    });
+    response.code(201);
     return response;
   }
 }

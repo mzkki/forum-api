@@ -253,4 +253,34 @@ describe('/threads endpoint', () => {
       expect(responseJson.data).toBeDefined();
     });
   });
+
+  describe('when POST /threads/{threadId}/comments/{commentId}/replies', () => {
+    it('should response 201 and persisted reply', async () => {
+      const userLoginPayload = {
+        username: 'for_test_only',
+        password: 'secret',
+      };
+      const loginUserUseCase = container.getInstance(LoginUserUseCase.name);
+      const { accessToken } = await loginUserUseCase.execute(userLoginPayload);
+
+      const replyPayload = {
+        content: 'test reply',
+      };
+
+      const server = await createServer(container);
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments/${commentId}/replies`,
+        payload: replyPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(201);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.addedReply).toBeDefined();
+    });
+  });
 });
