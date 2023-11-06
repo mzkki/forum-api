@@ -1,4 +1,3 @@
-const GetDetailThread = require('../../Domains/threads/entites/GetDetailThread');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedThread = require('../../Domains/threads/entites/AddedThread');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
@@ -33,7 +32,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const result = await this._pool.query(query);
 
-    if (result.rows.length === 0) {
+    if (result.rowCount === 0) {
       throw new NotFoundError('thread tidak ditemukan');
     }
   }
@@ -51,7 +50,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       throw new NotFoundError('thread tidak ditemukan');
     }
 
-    return new GetDetailThread({ ...result.rows[0] });
+    return result.rows[0];
   }
 }
 

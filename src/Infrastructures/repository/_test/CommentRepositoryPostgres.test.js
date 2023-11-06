@@ -157,26 +157,41 @@ describe('CommmentRepositoryPostgres', () => {
     });
   });
 
-  describe('getCommentsById', () => {
+  describe('getCommentsFromThread', () => {
     it('should return thread\'s comments correctly', async () => {
-      const commentPayload = new AddComment({
-        content: 'this is comment',
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-333',
+        content: 'this is content',
         owner: 'user-213',
         threadId: 'thread-213',
       });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-444',
+        content: 'this is comment content',
+        owner: 'user-213',
+        threadId: 'thread-213',
+        isDelete: true,
+      });
 
-      const fakeIdGenerator = () => '123';
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool);
 
-      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
-      await commentRepositoryPostgres.addComment(commentPayload);
-
-      const threadComments = await commentRepositoryPostgres.getCommentFromThread('thread-213');
-      expect(threadComments).toStrictEqual([{
-        id: 'comment-123',
-        username: 'test_purpose_only',
-        content: 'this is comment',
-        date: threadComments[0].date,
-      }]);
+      const threadComments = await commentRepositoryPostgres.getCommentsFromThread('thread-213');
+      expect(threadComments).toStrictEqual([
+        {
+          id: 'comment-444',
+          username: 'test_purpose_only',
+          content: 'this is comment content',
+          date: new Date('2023-08-17T00:00:00.000Z').toISOString(),
+          is_delete: true,
+        },
+        {
+          id: 'comment-333',
+          username: 'test_purpose_only',
+          content: 'this is content',
+          date: new Date('2023-08-17T00:00:00.000Z').toISOString(),
+          is_delete: false,
+        },
+      ]);
     });
   });
 });

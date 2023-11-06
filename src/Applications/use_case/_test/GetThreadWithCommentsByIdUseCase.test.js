@@ -1,5 +1,3 @@
-const GetDetailThread = require('../../../Domains/threads/entites/GetDetailThread');
-const GetDetailComment = require('../../../Domains/comments/entities/GetDetailComment');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const GetThreadWithCommentsByIdUseCase = require('../GetThreadWithCommentsByIdUseCase');
@@ -32,13 +30,13 @@ describe('GetThreadWithCommentsByIdUseCase', () => {
       threadId: 'thread-123',
     };
 
-    const mockGetDetailThread = new GetDetailThread({
+    const mockGetDetailThread = {
       id: 'thread-123',
       title: 'contoh title',
       body: 'contoh body',
       date: 'contoh date',
       username: 'dicoding',
-    });
+    };
 
     const mockGetDetailComment = [
       {
@@ -47,14 +45,14 @@ describe('GetThreadWithCommentsByIdUseCase', () => {
         date: 'contoh date',
         content: 'this is the content',
       },
+      {
+        id: 'comment-213',
+        username: 'dicoding3',
+        date: 'anggap aja date',
+        content: 'this is the content',
+        is_delete: true,
+      },
     ];
-    let mockComment = [];
-
-    mockGetDetailComment.map((mckComment) => {
-      const detailComment = new GetDetailComment(mckComment);
-      mockComment = detailComment._addComment(mckComment);
-      return mockComment;
-    });
 
     const mockCommentRepository = new CommentRepository();
     const mockThreadRepository = new ThreadRepository();
@@ -88,6 +86,12 @@ describe('GetThreadWithCommentsByIdUseCase', () => {
           username: 'dicoding2',
           date: 'contoh date',
           content: 'this is the content',
+        },
+        {
+          id: 'comment-213',
+          username: 'dicoding3',
+          date: 'anggap aja date',
+          content: '**komentar telah dihapus**',
         },
       ],
     });

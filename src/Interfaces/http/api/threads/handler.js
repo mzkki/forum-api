@@ -60,14 +60,16 @@ class ThreadsHandler {
   }
 
   async getThreadWithCommentsHandler(request, h) {
-    const { threadId } = request.params;
-    const getThreadWithCommentsByIdUseCase = this._container
-      .getInstance(GetThreadWithCommentsByIdUseCase.name);
-    const data = await getThreadWithCommentsByIdUseCase.execute(threadId);
+    const getThreadwithCommentsByIdUseCase = this
+      ._container.getInstance(GetThreadWithCommentsByIdUseCase.name);
+    // console.log(getThreadwithCommentsByIdUseCase);
+    const data = await getThreadwithCommentsByIdUseCase.execute(request.params);
 
     const response = h.response({
       status: 'success',
-      data,
+      data: {
+        thread: data,
+      },
     });
     response.code(200);
     return response;
