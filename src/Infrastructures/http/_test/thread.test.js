@@ -238,4 +238,19 @@ describe('/threads endpoint', () => {
       expect(responseJson.status).toEqual('success');
     });
   });
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and give thread data with comments', async () => {
+      const server = await createServer(container);
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${threadId}`,
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data).toBeDefined();
+    });
+  });
 });
