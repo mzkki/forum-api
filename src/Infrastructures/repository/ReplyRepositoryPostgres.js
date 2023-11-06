@@ -44,6 +44,29 @@ class ReplyRepositoryPostgres extends ReplyRepository {
       throw new AuthorizationError('Anda tidak berhak melakukan hal ini');
     }
   }
+
+  async getRepliesFromThread(threadId) {
+    const query = {
+      text: `SELECT replies.id, replies.content, replies.date, users.username, replies.is_delete, replies.comment_id FROM replies
+      LEFT JOIN users ON users.id = replies.owner 
+      LEFT JOIN comments ON comments.id = replies.comment_id
+      LEFT JOIN threads ON threads.id = comments.thread_id
+      WHERE threads.id = $1 ORDER BY replies.date ASC`,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows;
+  }
+
+  async softDeleteReply(id) {
+    const query = {
+      text: 'UPDATE replies SET is_delete = true WHERE id = $1',
+      values: [id],
+    };
+
+    await this._pool.query(query);
+  }
 }
 
 module.exports = ReplyRepositoryPostgres;

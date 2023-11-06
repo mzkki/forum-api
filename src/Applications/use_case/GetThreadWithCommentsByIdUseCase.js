@@ -1,7 +1,8 @@
 class GetThreadWithCommentsByIdUseCase {
-  constructor({ threadRepository, commentRepository }) {
+  constructor({ threadRepository, commentRepository, replyRepository }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
+    this._replyRepository = replyRepository;
   }
 
   async execute({ threadId }) {
@@ -9,6 +10,7 @@ class GetThreadWithCommentsByIdUseCase {
     await this._threadRepository.checkAvaibilityThread(threadId);
     const comments = await this._commentRepository.getCommentsFromThread(threadId);
     const thread = await this._threadRepository.getThreadById(threadId);
+    const replies = await this._replyRepository.getRepliesFromThread(threadId);
     const threadData = {
       id: thread.id,
       title: thread.title,
@@ -19,6 +21,13 @@ class GetThreadWithCommentsByIdUseCase {
         id: comment.id,
         username: comment.username,
         date: comment.date,
+        replies: replies.filter((reply) => reply.comment_id === comment.id).map((reply) => ({
+          id: reply.id,
+          content: reply.is_delete ? '**balasan telah dihapus**' : reply.content,
+          // content: reply.content,
+          date: reply.date,
+          username: reply.username,
+        })),
         content: comment.is_delete ? '**komentar telah dihapus**' : comment.content,
       })),
     };
