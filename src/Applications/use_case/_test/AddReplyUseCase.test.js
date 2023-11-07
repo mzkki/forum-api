@@ -55,9 +55,9 @@ describe('AddReplyUseCase', () => {
     mockUserRepository.getUserById = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockThreadRepository.checkAvaibilityThread = jest.fn()
-      .mockImplementation(() => Promise.resolve(useCasePayload.threadId));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.checkAvaibilityComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(useCasePayload.commentId));
+      .mockImplementation(() => Promise.resolve());
     mockReplyRepository.addReply = jest.fn()
       .mockImplementation(() => Promise.resolve(mockAddedReply));
 
