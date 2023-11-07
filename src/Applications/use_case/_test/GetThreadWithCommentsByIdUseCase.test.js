@@ -78,7 +78,7 @@ describe('GetThreadWithCommentsByIdUseCase', () => {
     const mockReplyRepository = new ReplyRepository();
 
     mockThreadRepository.checkAvaibilityThread = jest.fn()
-      .mockImplementation(() => Promise.resolve(useCasePayload.threadId));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.getCommentsFromThread = jest.fn()
       .mockImplementation(() => Promise.resolve(mockGetDetailComment));
     mockReplyRepository.getRepliesFromThread = jest.fn()

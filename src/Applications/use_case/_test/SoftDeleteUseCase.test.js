@@ -20,9 +20,9 @@ describe('SoftDeleteCommentUseCase', () => {
     mockThreadRepository.checkAvaibilityThread = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.verifyCommentOwner = jest.fn()
-      .mockImplementation(() => Promise.resolve(useCasePayload));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.softDeleteComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(useCasePayload));
+      .mockImplementation(() => Promise.resolve());
 
     const resultSoftDeleteUseCase = new SoftDeleteCommentUseCase({
       commentRepository: mockCommentRepository,

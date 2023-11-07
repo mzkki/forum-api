@@ -27,7 +27,9 @@ describe('A AddedReply entities', () => {
       owner: 'user-123',
     };
 
-    const { content } = new AddedReply(payload);
+    const { id, content, owner } = new AddedReply(payload);
+    expect(id).toEqual(payload.id);
     expect(content).toEqual(payload.content);
+    expect(owner).toEqual(payload.owner);
   });
 });
