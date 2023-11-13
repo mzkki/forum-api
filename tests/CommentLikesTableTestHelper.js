@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
-const LiekesCommentTableTestHelper = {
+const CommentLikesTableTestHelper = {
   async addLikes({
     id = 'comment-likes-123', userId = 'user-123', commentId = 'comment-123',
   }) {
@@ -18,4 +18,4 @@ const LiekesCommentTableTestHelper = {
   },
 };
 
-module.exports = LiekesCommentTableTestHelper;
+module.exports = CommentLikesTableTestHelper;
