@@ -1,6 +1,5 @@
 const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentUseCase');
 const SoftDeleteCommentUseCase = require('../../../../Applications/use_case/SoftDeleteCommentUseCase');
-const LikeCommentUseCase = require('../../../../Applications/use_case/LikeCommentUseCase');
 
 class CommentsHandler {
   constructor(container) {
@@ -8,7 +7,6 @@ class CommentsHandler {
 
     this.postCommentHandler = this.postCommentHandler.bind(this);
     this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
-    this.putCommentLikeHandler = this.putCommentLikeHandler.bind(this);
   }
 
   async postCommentHandler(request, h) {
@@ -33,19 +31,6 @@ class CommentsHandler {
     const { threadId, commentId } = request.params;
     const softDeleteCommentUseCase = this._container.getInstance(SoftDeleteCommentUseCase.name);
     await softDeleteCommentUseCase.execute({ owner, threadId, commentId });
-
-    const response = h.response({
-      status: 'success',
-    });
-    response.code(200);
-    return response;
-  }
-
-  async putCommentLikeHandler(request, h) {
-    const { id: userId } = request.auth.credentials;
-    const { threadId, commentId } = request.params;
-    const likeCommentUseCase = this._container.getInstance(LikeCommentUseCase.name);
-    await likeCommentUseCase.execute({ userId, threadId, commentId });
 
     const response = h.response({
       status: 'success',
